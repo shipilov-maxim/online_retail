@@ -30,7 +30,8 @@ class Contact(models.Model):
     city = models.CharField(max_length=100, verbose_name='Город', **NULLABLE)
     street = models.CharField(max_length=100, verbose_name='Улица', **NULLABLE)
     house_number = models.PositiveIntegerField(verbose_name='Номер дома', **NULLABLE)
-    seller = models.ForeignKey('Seller', on_delete=models.CASCADE, verbose_name='Продавец')
+    seller = models.ForeignKey('Seller', on_delete=models.CASCADE, related_name='seller_contact',
+                               verbose_name='Продавец')
 
     def __str__(self):
         return f'{self.email} ({self.city if self.city else ''}, ул. {self.street if self.street else ''}, \

@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
+from django.utils.http import urlencode
 
 from retail.models import Seller, Contact, Product
 
@@ -28,10 +31,18 @@ def debt_write_off(modeladmin, request, queryset):
 
 @admin.register(Seller)
 class SellerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'seller_type', 'provider', 'debt', 'contact_city')
+    list_display = ('name', 'seller_type', 'provider_link', 'debt', 'contact_city')
     list_filter = ('seller_type', CityFilter)
     actions = [debt_write_off]
 
     @admin.display(description="Город")
     def contact_city(self, obj):
         return list(set([contact.city for contact in Contact.objects.filter(seller=obj.pk)]))
+
+    @admin.display(description="Поставщик")
+    def provider_link(self, obj):
+        pass
+
+        if obj.provider:
+            url = reverse('admin:retail_seller_change', args=(obj.provider.pk,))
+            return format_html('<a href="{}">{}</a>', url, obj.provider)
